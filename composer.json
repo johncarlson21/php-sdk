@@ -1,5 +1,5 @@
 {
-    "name": "constantcontact/constantcontact",
+    "name": "johncarlson21/php-sdk",
     "type": "library",
     "description": "Constant Contact PHP SDK for v2",
     "keywords": ["constantcontact", "ctct", "email marketing", "constant contact"],
