@@ -17,8 +17,8 @@ class Config
          * REST endpoints
          */
         'endpoints' => array(
-            'base_url' => 'https://api.constantcontact.com/v2/',
-            'account_verified_addresses' => 'account/verifiedemailaddresses',
+            'base_url' => 'https://api.cc.email/v3/',
+            'account_verified_addresses' => 'account/emails',
             'account_info' => 'account/info',
             'activity' => 'activities/%s',
             'activities' => 'activities',
@@ -28,6 +28,7 @@ class Config
             'add_contacts_activity' => 'activities/addcontacts',
             'contact' => 'contacts/%s',
             'contacts' => 'contacts',
+            'contacts_sign_up_form' => 'contacts/sign_up_form',
             'lists' => 'lists',
             'list' => 'lists/%s',
             'list_contacts' => 'lists/%s/contacts',
