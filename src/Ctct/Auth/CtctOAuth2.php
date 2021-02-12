@@ -41,7 +41,8 @@ class CtctOAuth2
         $params = array(
             'response_type' => $responseType,
             'client_id' => $this->clientId,
-            'redirect_uri' => $this->redirectUri
+            'redirect_uri' => $this->redirectUri,
+            'scope' => 'contact_data',
         );
 
         // add the state param if it was provided
@@ -49,10 +50,12 @@ class CtctOAuth2
             $params['state'] = $state;
         }
 
-        $baseUrl = Config::get('auth.base_url') . Config::get('auth.authorization_endpoint');
-        $request = $this->client->createRequest("GET", $baseUrl);
-        $request->setQuery($params);
-        return $request->getUrl();
+        $baseUrl = Config::get('auth.base_url'); // . Config::get('auth.authorization_endpoint');
+        /*$request = $this->client->createRequest("GET", $baseUrl);
+        $request->setQuery($params);*/
+        //$request = $this->client->request("GET", $baseUrl, $params);
+        //return $request->getUrl();
+        return $baseUrl . '?client_id=' . $this->clientId . '&redirect_uri=' . $this->redirectUri . '&response_type=' . $responseType . '&scope=contact_data';
     }
 
     /**
@@ -65,18 +68,58 @@ class CtctOAuth2
     {
         $params = array(
             'grant_type' => Config::get('auth.authorization_code_grant_type'),
-            'client_id' => $this->clientId,
-            'client_secret' => $this->clientSecret,
+            //'client_id' => $this->clientId,
+            //'client_secret' => $this->clientSecret,
             'code' => $code,
             'redirect_uri' => $this->redirectUri
         );
+        $credentials = base64_encode($this->clientId . ':' . $this->clientSecret);
 
-        $baseUrl = Config::get('auth.base_url') . Config::get('auth.token_endpoint');
-        $request = $this->client->createRequest("POST", $baseUrl);
-        $request->setQuery($params);
+        $baseUrl = Config::get('auth.token_url'); // . Config::get('auth.token_endpoint');
+        //$response = $this->client->request("POST", $baseUrl, ['auth'=>[$this->clientId, $this->clientSecret, 'basic'], 'query' => $params, 'debug' => false]);
+        $response = $this->client->request(
+            "POST", 
+            $baseUrl, 
+            ['auth'=>[$this->clientId, 
+                      $this->clientSecret, 
+                      'basic'], 
+             'query' => $params, 
+             //'debug' => true,
+            ]);
 
         try {
-            $response = $this->client->send($request)->json();
+            $body = $response->getBody();
+            return $body->getContents();
+        } catch (ClientException $e) {
+            throw $this->convertException($e);
+        }
+
+        return $response;
+    }
+    
+    public function refreshAccessToken($code)
+    {
+        $params = array(
+            'grant_type' => Config::get('auth.authorization_code_grant_type'),
+            'refresh_token' => $code
+        );
+        $credentials = base64_encode($this->clientId . ':' . $this->clientSecret);
+
+        $baseUrl = Config::get('auth.token_url'); // . Config::get('auth.token_endpoint');
+        //$response = $this->client->request("POST", $baseUrl, ['auth'=>[$this->clientId, $this->clientSecret, 'basic'], 'query' => $params, 'debug' => false]);
+        $response = $this->client->request(
+            "POST", 
+            $baseUrl, 
+            ['auth'=>[$this->clientId, 
+                      $this->clientSecret, 
+                      'basic'], 
+             'query' => $params, 
+             //'debug' => true,
+            ]);
+
+        try {
+            $body = $response->getBody();
+            return $body->getContents();
         } catch (ClientException $e) {
             throw $this->convertException($e);
         }
