@@ -150,6 +150,41 @@ class ContactService extends BaseService
 
         return Contact::create($response->json());
     }
+    
+    public function addContactForm($accessToken, $contact, Array $params = array()) {
+        $baseUrl = Config::get('endpoints.base_url') . Config::get('endpoints.contacts_signup');
+        
+        $params = array(
+            'email_address' => $contact['email_address'],
+            'list_memberships' => $contact['list_memberships']
+        );
+        
+        $headers = [
+            'Authorization' => 'Bearer ' . $accessToken,        
+            'Content-Type' => 'application/json',
+        ];
+        
+        $client = parent::getClient();
+        
+        $body = json_encode($params);
+        
+        $response = $client->request(
+            "POST", 
+            $baseUrl, 
+            [
+             'headers' => $headers,
+             'body' => $body, 
+             //'debug' => true,
+            ]);
+
+        try {
+            print_r($response->getHeaders());
+            $body = $response->getBody();
+            return $body->getContents();
+        } catch (ClientException $e) {
+            throw $this->convertException($e);
+        }
+    }
 
     /**
      * Opt out a contact
