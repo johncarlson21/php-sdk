@@ -18,7 +18,7 @@ class Config
          */
         'endpoints' => array(
             'base_url' => 'https://api.cc.email/v3/',
-            'account_verified_addresses' => 'account/emails',
+            'account_verified_addresses' => 'account/verifiedemailaddresses',
             'account_info' => 'account/info',
             'activity' => 'activities/%s',
             'activities' => 'activities',
@@ -28,7 +28,7 @@ class Config
             'add_contacts_activity' => 'activities/addcontacts',
             'contact' => 'contacts/%s',
             'contacts' => 'contacts',
-            'contacts_sign_up_form' => 'contacts/sign_up_form',
+            'contacts_signup' => 'contacts/sign_up_form',
             'lists' => 'lists',
             'list' => 'lists/%s',
             'list_contacts' => 'lists/%s/contacts',
@@ -106,7 +106,9 @@ class Config
          * OAuth2 Authorization related configuration options
          */
         'auth' => array(
-            'base_url' => 'https://oauth2.constantcontact.com/oauth2/',
+            //'base_url' => 'https://oauth2.constantcontact.com/oauth2/',
+            'base_url' => 'https://api.cc.email/v3/idfed/',
+            'token_url' => 'https://idfed.constantcontact.com/as/token.oauth2',
             'response_type_code' => 'code',
             'response_type_token' => 'token',
             'authorization_code_grant_type' => 'authorization_code',
